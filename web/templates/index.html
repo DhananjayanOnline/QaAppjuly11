@@ -2,37 +2,105 @@
 
 {% block body_block %}
 
-<h1>Welcome</h1>
 
+
+<!-- Button trigger modal -->
 <div class="row">
     <div class="col-4"></div>
     <div class="col-4">
-        <form action="" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{form.as_p}}
-            <input class="btn btn-outline-info form-control btn-sm" type="submit" name="" id="" value="Add">
-        </form>
+        <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Create New Question
+        </button>
     </div>
     <div class="col-4"></div>
 </div>
 
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{form.as_p}}
+                <input class="btn btn-outline-info form-control btn-sm" type="submit" name="" id="" value="Add">
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 
     <div class="row gx-4 gx-lg-5 justify-content-center">
+        {% for q in questions %}
         <div class="col-md-10 col-lg-8 col-xl-7">
             <!-- Post preview-->
             <div class="post-preview">
                 <a href="post.html">
-                    <h2 class="post-title">Man must explore, and this is exploration at its greatest</h2>
-                    <h3 class="post-subtitle">Problems look mighty small from 150 miles up</h3>
+                    <h2 class="post-title">{{q.title}}</h2>
+                    <h5 class="post-subtitle">{{q.description}}</h5>
                 </a>
                 <p class="post-meta">
                     Posted by
-                    <a href="#!">Start Bootstrap</a>
-                    on September 24, 2022
+                    <a href="#!">{{q.user}}</a>
+                    on {{q.created_date}}
                 </p>
             </div>
+            <div>
+                {% if q.question_answers %}
+                        
+                        <div class="ps-1">
+                            <div class="accordion accordion-flush mb-3" id="accordionExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapse{{q.id}}" aria-expanded="false"
+                                            aria-controls="collapse{{q.id}}">
+                                            <h6>Answers</h6>
+                                        </button>
+                                    </h2>
+                                    {% for answer in q.question_answers %}
+                                    <div id="collapse{{q.id}}" class="accordion-collapse collapse"
+                                        aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <p style="display: inline;"><small>@{{answer.user}} </small></p><code class="ms-2"><small> {{answer.created_date}}</small></code>
+                                            <div class="row">
+                                                <div class="col-2 text-center">
+                                                    <p style="margin: 0;"><small>upvotes</small></p>
+                                                    <strong class="">{{answer.votecount}}</strong>
+                                                </div>
+                                                <div class="col-10">
+                                                    <p>
+                                                        {{answer.answer}}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                             
+                                            
+                                        </div>
+                                        <hr>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                        </div>
+                        {% endif %}
+            </div>
+            <hr>
         </div>
+        {% endfor %}
     </div>
+
 
 
 {% endblock body_block %}

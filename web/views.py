@@ -42,4 +42,4 @@ class IndexView(CreateView, ListView):
         return super().form_valid(form)
 
     def get_queryset(self):
-        return Questions.objects.exclude(user=self.request.user)
+        return Questions.objects.exclude(user=self.request.user).order_by('-created_date')
