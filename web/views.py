@@ -1,11 +1,13 @@
 from django.shortcuts import render,redirect
 
 # Create your views here.
-from django.views.generic import CreateView,FormView,TemplateView
-from .forms import LoginForm,UserRegistrationForm
+from django.views.generic import CreateView,FormView,ListView
+
+from api.models import Questions
+from .forms import LoginForm,UserRegistrationForm, QuestionForm
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate,login
-
+from django.contrib import messages
 
 class SignUpView(CreateView):
     template_name="register.html"
@@ -27,8 +29,17 @@ class SignInView(FormView):
             else:
                 return render(request,self.template_name,{"form":form})
 
-class IndexView(TemplateView):
+class IndexView(CreateView, ListView):
     template_name="index.html"
+    form_class = QuestionForm
+    success_url = reverse_lazy('index')
+    model = Questions
+    context_object_name = 'questions'
 
+    def form_valid(self, form):
+        form.instance.user=self.request.user
+        messages.success(self.request,"Your question is added")
+        return super().form_valid(form)
 
-
+    def get_queryset(self):
+        return Questions.objects.exclude(user=self.request.user)
