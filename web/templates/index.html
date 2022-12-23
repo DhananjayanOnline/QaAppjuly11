@@ -4,6 +4,16 @@
 
 
 
+{% if messages %}
+<div class="alert alert-secondary" role="alert">
+    {% for message in messages %}
+        {{ message }}
+    {% endfor %}
+</div>
+{% endif %}
+
+
+
 <!-- Button trigger modal -->
 <div class="row">
     <div class="col-4"></div>
@@ -56,6 +66,14 @@
                 </p>
             </div>
             <div>
+                <form action="{% url 'add-answer' q.id%}" method="post">
+                    {% csrf_token %}
+
+                    <input type="text" class="form-control" name="answer" id="" required>
+                    <button type="submit" class="btn form-control text-secondary">Add Answer</button>
+                </form>
+            </div>
+            <div>
                 {% if q.question_answers %}
                         
                         <div class="ps-1">
@@ -74,8 +92,8 @@
                                         <div class="accordion-body">
                                             <p style="display: inline;"><small>@{{answer.user}} </small></p><code class="ms-2"><small> {{answer.created_date}}</small></code>
                                             <div class="row">
-                                                <div class="col-2 text-center">
-                                                    <p style="margin: 0;"><small>upvotes</small></p>
+                                                <div class="col-2 text-center  mt-4">
+                                                    <a href="{% url 'upvote-answer' answer.id %}" style="margin: 0; font-size: 1em;"  class=""><i class="bi bi-caret-up-fill"></i></a>
                                                     <strong class="">{{answer.votecount}}</strong>
                                                 </div>
                                                 <div class="col-10">
